@@ -25,7 +25,7 @@ type TemplateOutput = {
 
 export const runScript = (
   initialInput: string,
-  script: string
+  payloadScript: string
 ): TemplateOutput => {
   const helper: Helper = {
     setLine: (
@@ -187,7 +187,7 @@ export const runScript = (
   };
 
   try {
-    const userFunction = new Function("helper", "input", script);
+    const userFunction = new Function("helper", "input", payloadScript);
     const result = userFunction(helper, initialInput);
     const results = Array.isArray(result) ? result : [result];
     return {

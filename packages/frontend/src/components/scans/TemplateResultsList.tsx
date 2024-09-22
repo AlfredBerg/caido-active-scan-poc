@@ -84,6 +84,7 @@ const TemplateResultsList: React.FC = () => {
           <TableRow>
             {[
               { id: "ID", label: "ID" },
+              { id: "Detection", label: "Detection Result" },
               { id: "Response.StatusCode", label: "Status Code" },
               { id: "Response.ContentLength", label: "Content Length" },
               { id: "TemplateID", label: "Template ID" },
@@ -110,6 +111,13 @@ const TemplateResultsList: React.FC = () => {
               hover
             >
               <TableCell>{result.ID}</TableCell>
+              <TableCell>
+                  <Chip
+                    label={result.Detection.toString()}
+                    color={result.Detection ? "success" : "warning"}
+                    size="small"
+                  />
+              </TableCell>
               <TableCell>
                 {result.Response.StatusCode ? (
                   <Chip

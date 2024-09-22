@@ -1,23 +1,22 @@
-# 403Bypasser
+# Caido Active Scan
 
-403Bypasser is a simple plugin that lets you bypass 403 status code by transforming HTTP requests with custom templates. You can run these templates on any request by right-clicking -> **Plugins** -> **403Bypasser: Scan**.
-
-![Screen Recording 2024-09-18 at 22 08 01](https://github.com/user-attachments/assets/121888fb-b6ba-4c80-8840-808ae43afeb0)
+Active Scan is a proof of concept for doing active scans in caido by transforming HTTP requests with custom templates. You can run these templates on any request by right-clicking -> **Plugins** -> **Active Scan: Scan**.  
+The plugin is based on https://github.com/bebiksior/Caido403Bypasser with some minor modifications to turn it into a more general scanner.  
 
 ## Installation
-You can install 403Bypasser directly from the **Caido Community Store** by navigating in your Caido to **Plugins** -> **Community Store**.
+You need to clone the repository and run `pnpm build`. Then `dist/plugin_package.zip` can be installed on caidos `Plugins` page
 
 ## Features
 - **Templates**: Templates are YAML files containing:
   - `ID`
   - `Description`
-  - `Modification Script`
-- **Modification Script**: The script runs JavaScript on the original request and allows you to send a modified request. You can even return an array of modified requests if you want to send multiple requests from a single template.
-- **AI Generate**: You can also use the built-in AI Generate tool! Just provide your OpenAI API key in the settings, and by clicking the AI Generate button, it will create a template for you :D
+  - `payloadScript`
+  - `detectionScript`
+- **Payload Script**: The script runs JavaScript on the original request and allows you to send a modified request. You can even return an array of modified requests if you want to send multiple requests from a single template.
+- **Detection Script**: The script runs JavaScript on the raw response to the modified request. It should return either `true` (found vulnerability) or `false` (no vulnerability found).
+- ~**AI Generate**: You can also use the built-in AI Generate tool! Just provide your OpenAI API key in the settings, and by clicking the AI Generate button, it will create a template for you :D~ (not working in the initial version)
 
-![Screen Recording 2024-09-18 at 22 05 14](https://github.com/user-attachments/assets/751eff8a-ad16-4e88-ae78-2910cb7684dc)
-
-## Modification Script: Exposed Variables & Functions
+## Payload Script: Exposed Variables & Functions
 - `input`: The raw HTTP request string.
 - Helper functions to modify the request:
   - `helper.setLine(input, 0, (prev) => prev.toUpperCase())`
@@ -38,18 +37,19 @@ You can install 403Bypasser directly from the **Caido Community Store** by navig
 ## Example Template
 
 ```yaml
-id: basic-add-json-ext
-description: Appends .json to the path
+id: basic-reflected
+description: Detects if the value is reflected in the response
 enabled: true
-modificationScript: |-
-  const newRequest = helper.setPath(input, (prev) => prev + ".json") 
-  return newRequest;
+payloadScript: >-
+  query = new URLSearchParams(helper.getQuery(input));
+  let modifiedRequests = [];
+  for (const key of query.keys()) {
+    let queryClone = new URLSearchParams(helper.getQuery(input))
+    queryClone.set(key, "aaabbbcccddd");
+    const modifiedRequest = helper.setQuery(input, () => queryClone);
+    modifiedRequests.push(modifiedRequest);
+  }
+  return modifiedRequests;
+detectionScript: >-
+  return input.includes("aaabbbcccddd")
 ```
-
-![Screenshot 2024-09-18 at 22 15 06](https://github.com/user-attachments/assets/b82ffb33-6830-4728-9f45-463d26ea698d)
-
-
-
-## Contribution
-
-Feel free to request features, suggest improvements, or report bugs via GitHub Issues.

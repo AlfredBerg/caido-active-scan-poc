@@ -122,7 +122,8 @@ export async function writeTemplate(sdk: SDK, template: Template) {
     id: template.id,
     description: template.description,
     enabled: template.enabled,
-    modificationScript: template.modificationScript,
+    payloadScript: template.payloadScript,
+    detectionScript: template.detectionScript
   };
 
   const yamlData = YAML.stringify(templateData);

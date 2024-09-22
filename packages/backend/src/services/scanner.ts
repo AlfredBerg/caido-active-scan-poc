@@ -16,6 +16,7 @@ const BaseTemplateResult: TemplateResult = {
     ContentLength: 0,
   },
   State: "Running",
+  Detection: false
 };
 
 const isCancelled = (scan: Scan) =>
@@ -39,7 +40,7 @@ export const runScanWorker = async (
     if (!template.enabled) continue;
 
     let baseRequest = scan.Target.RawRequest;
-    const result = runScript(baseRequest, template.modificationScript);
+    const result = runScript(baseRequest, template.payloadScript);
 
     if (!result.success) {
       sdk.console.log(`Error running script: ${result.error}`);
@@ -81,15 +82,18 @@ export const runScanWorker = async (
         spec.setRaw(modifiedRequest);
 
         const { response } = await sdk.requests.send(spec);
-        const body = response.getRaw().toText() || "";
+        const rawRes = response.getRaw().toText() || "";
+        const userFunction = new Function("input", template.detectionScript);
+        const detectionResult = userFunction(rawRes);
 
         const updateFields: Partial<TemplateResult> = {
           State: "Success",
           Response: {
             StatusCode: response.getCode(),
-            RawResponse: body,
-            ContentLength: body.length,
+            RawResponse: rawRes,
+            ContentLength: rawRes.length,
           },
+          Detection: detectionResult
         };
 
         scanStore.updateTemplateResult(

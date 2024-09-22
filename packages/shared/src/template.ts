@@ -3,6 +3,7 @@ export type Template = {
   previousID?: string;
   description?: string;
   enabled: boolean;
-  modificationScript: string;
+  payloadScript: string;
+  detectionScript: string;
   isNew?: boolean;
 };

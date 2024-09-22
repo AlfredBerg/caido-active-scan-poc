@@ -1,0 +1,15 @@
+id: basic-reflected
+description: Detects if the value is reflected in the response
+enabled: true
+payloadScript: >-
+  query = new URLSearchParams(helper.getQuery(input));
+  let modifiedRequests = [];
+  for (const key of query.keys()) {
+    let queryClone = new URLSearchParams(helper.getQuery(input))
+    queryClone.set(key, "aaabbbcccddd");
+    const modifiedRequest = helper.setQuery(input, () => queryClone);
+    modifiedRequests.push(modifiedRequest);
+  }
+  return modifiedRequests;
+detectionScript: >-
+  return input.includes("aaabbbcccddd")

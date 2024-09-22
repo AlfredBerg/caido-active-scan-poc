@@ -28,6 +28,6 @@ export const runScan = async (sdk: CaidoSDK, context: CommandContext) => {
       duration: 3000,
     });
 
-    sdk.navigation.goTo("/403bypasser");
+    sdk.navigation.goTo("/activescan");
   }
 };

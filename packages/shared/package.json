@@ -1,7 +1,7 @@
 {
   "name": "shared",
   "version": "1.0.1",
-  "description": "Shared types for 403Bypasser",
+  "description": "Shared types for activescan",
   "author": "bebiks <bebiks@cvssadvisor.com>",
   "license": "CC0-1.0",
   "type": "module",

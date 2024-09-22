@@ -141,9 +141,16 @@ export function validateTemplate(template: any): {
     };
   }
 
-  if (typeof template.modificationScript !== "string") {
+  if (typeof template.payloadScript !== "string") {
     return {
-      message: "Template must have a string modificationScript",
+      message: "Template must have a string payload script",
+      valid: false,
+    };
+  }
+
+  if (typeof template.detectionScript !== "string") {
+    return {
+      message: "Template must have a string detection script",
       valid: false,
     };
   }

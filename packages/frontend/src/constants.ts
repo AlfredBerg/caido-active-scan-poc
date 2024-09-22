@@ -19,7 +19,12 @@ export const baseTemplate = {
   description: "New template!",
   isNew: true,
   enabled: true,
-  modificationScript: `/*\n${engineInfo}\n*/
+  payloadScript: `/*\n${engineInfo}\n*/,
+
+
+return input;`,
+  detectionScript: `/*\n${engineInfo}\n*/,
+
 
 return input;`,
 };

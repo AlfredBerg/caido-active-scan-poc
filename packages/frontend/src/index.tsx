@@ -26,25 +26,25 @@ export const init = (sdk: CaidoSDK) => {
   root.render(<App />);
 
   // Add the root element to the SDK navigation page
-  sdk.navigation.addPage("/403bypasser", {
+  sdk.navigation.addPage("/activescan", {
     body: rootElement,
   });
 
   // Register a sidebar item
-  sdk.sidebar.registerItem("403 Bypasser", "/403bypasser");
+  sdk.sidebar.registerItem("Active Scan", "/activescan");
 
-  sdk.commands.register("403bypasser-scan", {
-    name: "403Bypasser: Scan",
+  sdk.commands.register("activeScan", {
+    name: "Active Scan: Scan",
     run: (context) => runScan(sdk, context),
   });
 
   sdk.menu.registerItem({
     type: "Request",
-    commandId: "403bypasser-scan",
+    commandId: "activeScan",
   });
 
   sdk.menu.registerItem({
     type: "RequestRow",
-    commandId: "403bypasser-scan",
+    commandId: "activeScan",
   });
 };

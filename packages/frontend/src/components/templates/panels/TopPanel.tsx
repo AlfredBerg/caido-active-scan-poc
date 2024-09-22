@@ -38,18 +38,23 @@ const TopPanel = () => {
   const [draftDescription, setDraftDescription] = useState(
     selectedTemplate?.description || ""
   );
-  const [draftScript, setDraftScript] = useState(
-    selectedTemplate?.modificationScript || ""
+  const [draftPayloadScript, setDraftPayloadScript] = useState(
+    selectedTemplate?.payloadScript || ""
+  );
+  const [draftDetectionScript, setDraftDetectionScript] = useState(
+    selectedTemplate?.detectionScript || ""
   );
 
   useEffect(() => {
     setDraftId(selectedTemplate?.id || "");
     setDraftDescription(selectedTemplate?.description || "");
-    setDraftScript(selectedTemplate?.modificationScript || "");
+    setDraftPayloadScript(selectedTemplate?.payloadScript || "");
+    setDraftDescription(selectedTemplate?.description || "");
+    setDraftDetectionScript(selectedTemplate?.detectionScript || "");
   }, [selectedTemplate]);
 
   const onTestClick = useCallback(() => {
-    const results = runScript(testContent, draftScript);
+    const results = runScript(testContent, draftPayloadScript);
     if (results.success) {
       setTestResults(results.requests);
     } else {
@@ -59,12 +64,12 @@ const TopPanel = () => {
       });
       console.error(results.error);
     }
-  }, [testContent, draftScript, setTestResults]);
+  }, [testContent, draftPayloadScript, setTestResults]);
 
   const onSaveClick = useCallback(async () => {
     if (!selectedTemplate) return;
 
-    if (!draftId || !draftDescription || !draftScript) {
+    if (!draftId || !draftDescription || !draftPayloadScript || !draftDetectionScript) {
       sdk.window.showToast("Please fill all fields", {
         variant: "error",
       });
@@ -75,7 +80,8 @@ const TopPanel = () => {
       ...selectedTemplate,
       id: draftId,
       description: draftDescription,
-      modificationScript: draftScript,
+      payloadScript: draftPayloadScript,
+      detectionScript: draftDetectionScript,
     };
 
     await handleBackendCall(
@@ -89,16 +95,18 @@ const TopPanel = () => {
   }, [
     draftId,
     draftDescription,
-    draftScript,
+    draftPayloadScript,
+    draftDetectionScript,
     selectedTemplate,
     setTemplates,
     sdk,
   ]);
 
+  //TODO: make this work
   const onAIAskClick = useCallback(async () => {
     setAIDialogVisible(false);
 
-    setDraftScript("");
+    // setDraftScript("");
 
     let aiResponse = "";
     fetchOpenAIStream(
@@ -120,7 +128,7 @@ const TopPanel = () => {
 
         const scriptMatch = /---SCRIPT\s*?\n([\s\S]+)/.exec(aiResponse);
         if (scriptMatch) {
-          setDraftScript(scriptMatch[1] || "");
+          // setDraftScript(scriptMatch[1] || "");
         }
       }
     );
@@ -130,7 +138,8 @@ const TopPanel = () => {
   const hasUnsavedChanges =
     draftId !== selectedTemplate?.id ||
     draftDescription !== selectedTemplate?.description ||
-    draftScript !== selectedTemplate?.modificationScript ||
+    draftPayloadScript !== selectedTemplate?.payloadScript ||
+    draftDetectionScript !== selectedTemplate?.detectionScript ||
     selectedTemplate?.isNew;
 
   if (!selectedTemplate) {
@@ -160,17 +169,33 @@ const TopPanel = () => {
             value={draftDescription}
             onChange={(event) => setDraftDescription(event.target.value)}
           />
+
           <div className="flex flex-col gap-2">
-            <label htmlFor="modificationScript">Modification Script</label>
+            <label htmlFor="payloadScript">Payload Script</label>
             <AceEditor
               mode="javascript"
               theme="chaos"
               wrapEnabled={true}
               showPrintMargin={false}
-              value={draftScript}
-              onChange={(value) => setDraftScript(value)}
+              value={draftPayloadScript}
+              onChange={(value) => setDraftPayloadScript(value)}
               style={{ width: "100%", height: "220px" }}
-              name="modificationScript"
+              name="payloadScript"
+              setOptions={{ useWorker: false }}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="detectionScript">Detection Script</label>
+            <AceEditor
+              mode="javascript"
+              theme="chaos"
+              wrapEnabled={true}
+              showPrintMargin={false}
+              value={draftDetectionScript}
+              onChange={(value) => setDraftDetectionScript(value)}
+              style={{ width: "100%", height: "220px" }}
+              name="detectionScript"
               setOptions={{ useWorker: false }}
             />
           </div>

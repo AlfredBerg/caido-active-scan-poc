@@ -1,8 +1,8 @@
 {
-  "id": "bypasser",
-  "name": "403Bypasser",
-  "version": "1.0.1",
-  "description": "Bypass a 403 page with a set of templates",
+  "id": "activescan",
+  "name": "activescan",
+  "version": "0.0.1",
+  "description": "Do an active scan of a request with a set of templates",
   "author": {
     "name": "bebiks",
     "email": "bebiks@cvssadvisor.com",
@@ -12,7 +12,7 @@
     {
       "kind": "frontend",
       "id": "bypasser-frontend",
-      "name": "403Bypasser: Frontend",
+      "name": "activescan: Frontend",
       "entrypoint": "frontend/script.js",
       "style": "frontend/style.css",
       "backend": {
@@ -22,7 +22,7 @@
     {
       "kind": "backend",
       "id": "bypasser-backend",
-      "name": "403Bypasser: Backend",
+      "name": "activescan: Backend",
       "runtime": "javascript",
       "entrypoint": "backend/script.js"
     }

@@ -21,6 +21,7 @@ export type TemplateResult = {
   SentRawRequest: string;
   Response: Response;
   State: "Running" | "Success" | "Failed";
+  Detection: boolean;
 };
 
 export type Response = {
